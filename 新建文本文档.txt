@@ -1,0 +1,42 @@
+/* USER CODE BEGIN 1 */
+void USBH_HID_EventCallback(USBH_HandleTypeDef *phost)
+{
+   HID_TypeTypeDef   type = HID_UNKNOWN;
+ 
+   USBH_ErrLog("USBH_HID_EventCallback");
+ 
+   type = USBH_HID_GetDeviceType(phost);
+ 
+   switch(type)
+   {
+       case HID_KEYBOARD:
+       {
+            HID_KEYBD_Info_TypeDef *keyboard_info;
+ 
+            char ascii;
+            keyboard_info = USBH_HID_GetKeybdInfo(phost);
+ 
+            if( keyboard_info != NULL )
+            {
+                ascii = USBH_HID_GetASCIICode(keyboard_info);
+                if( ascii != 0)
+                {
+                    USBH_UsrLog("%c",ascii);
+                }
+            }
+       }
+ 
+       break;
+ 
+       case HID_MOUSE:
+        {
+           HID_MOUSE_Info_TypeDef *mouse_info;
+           mouse_info = USBH_HID_GetMouseInfo(phost);
+           USBH_UsrLog("mouse_info X%d, Y%d ,button %d %d %d",mouse_info->x,mouse_info->y,mouse_info->buttons[2],mouse_info->buttons[1],mouse_info->buttons[0]);
+       }
+       break;
+       default:
+       break;
+   }
+}
+/* USER CODE END 1 */
